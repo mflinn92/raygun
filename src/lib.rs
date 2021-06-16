@@ -6,6 +6,8 @@ pub fn write_ppm(path: &str) -> std::io::Result<()> {
     let nx = 200;
     let ny = 100;
 
+    write!(img, "P3\n{} {}\n255\n", nx, ny)?;
+
     for j in (0..ny).rev() {
         for i in 0..nx {
             let r = i as f32 / nx as f32;
