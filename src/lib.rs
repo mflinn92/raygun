@@ -14,7 +14,7 @@ pub fn write_ppm(path: &str) -> std::io::Result<()> {
             let ir = (r * 255.99) as u32;
             let ig = (g * 255.99) as u32;
             let ib = (b * 255.99) as u32;
-            write!(img, "{} {} {}\n", ir, ig, ib)?;
+            writeln!(img, "{} {} {}", ir, ig, ib)?;
         }
     }
     Ok(())
