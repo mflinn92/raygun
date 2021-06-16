@@ -1,7 +1,7 @@
-use raygun::write_ppm;
+use raygun::render;
 
 fn main() {
-    if let Err(e) = write_ppm("test.ppm") {
+    if let Err(e) = render("test.ppm") {
         eprintln!("{}", e);
     };
 }
