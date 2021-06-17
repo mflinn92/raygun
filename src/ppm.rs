@@ -60,7 +60,7 @@ mod tests {
         ppm.header(width, height).unwrap();
 
         let points = vec!["1 2 3", "4 5 6", "7 8 9"];
-        for point in &points {
+        for point in points.iter() {
             ppm.append(point).unwrap();
         }
 
