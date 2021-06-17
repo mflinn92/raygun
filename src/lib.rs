@@ -1,5 +1,6 @@
 use std::fs::File;
 mod ppm;
+mod vec;
 use ppm::Ppm;
 
 const WIDTH: u32 = 200;
