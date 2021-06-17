@@ -1,13 +1,13 @@
 use std::fs::File;
 mod ppm;
-use ppm::PPM;
+use ppm::Ppm;
 
 const WIDTH: u32 = 200;
 const HEIGHT: u32 = 100;
 
 pub fn render(path: &str) -> std::io::Result<()> {
     let img = File::create(path)?;
-    let mut ppm = PPM::new(img);
+    let mut ppm = Ppm::new(img);
 
     ppm.header(WIDTH, HEIGHT)?;
 
