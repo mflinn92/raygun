@@ -1,7 +1,10 @@
 use raygun::{render, HEIGHT, WIDTH};
+use std::fs::File;
 
 fn main() {
-    let r = render("test.ppm", |mut img_writer| {
+    let img_file = File::create("test.ppm").unwrap();
+
+    let r = render(img_file, |mut img_writer| {
         img_writer.header(WIDTH, HEIGHT)?;
 
         for j in (0..HEIGHT).rev() {
