@@ -5,16 +5,23 @@ pub struct Ppm<W: Write> {
     writer: W,
 }
 
+pub trait Generator {
+    fn header(&mut self, width: u32, height: u32) -> std::io::Result<()>;
+    fn append(&mut self, data: &str) -> std::io::Result<()>;
+}
+
 impl<W: Write> Ppm<W> {
     pub fn new(writer: W) -> Self {
         Ppm { writer }
     }
+}
 
-    pub fn header(&mut self, width: u32, height: u32) -> std::io::Result<()> {
+impl<W: Write> Generator for Ppm<W> {
+    fn header(&mut self, width: u32, height: u32) -> std::io::Result<()> {
         write!(self.writer, "P3\n{} {}\n255\n", width, height)
     }
 
-    pub fn append(&mut self, point_str: &str) -> std::io::Result<()> {
+    fn append(&mut self, point_str: &str) -> std::io::Result<()> {
         writeln!(self.writer, "{}", point_str)
     }
 }

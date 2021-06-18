@@ -1,3 +1,4 @@
+/// All vec operations will consume their arguments and return a new Vec3
 use std::ops;
 
 #[derive(Debug, PartialEq)]
@@ -56,6 +57,18 @@ impl Vec3 {
         }
         false
     }
+
+    fn dot(self, rhs: Self) -> f64 {
+        self.x() * rhs.x() + self.y() * rhs.y() + self.z() * rhs.z()
+    }
+
+    fn cross(self, rhs: Self) -> Self {
+        let x = self.y() * rhs.z() - self.z() * rhs.y();
+        let y = self.x() * rhs.z() - self.z() * rhs.x();
+        let z = self.x() * rhs.y() - self.y() * rhs.x();
+
+        Self(x, y, z)
+    }
 }
 
 impl ops::Add<Vec3> for Vec3 {
@@ -101,8 +114,16 @@ impl ops::Mul for Vec3 {
 impl ops::Mul<f64> for Vec3 {
     type Output = Self;
 
-    fn mul(self, other: f64) -> Self::Output {
-        Self(self.x() * other, self.y() * other, self.z() * other)
+    fn mul(self, rhs: f64) -> Self::Output {
+        Self(self.x() * rhs, self.y() * rhs, self.z() * rhs)
+    }
+}
+
+impl ops::Mul<Vec3> for f64 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Self::Output {
+        Vec3::new(self * rhs.x(), self * rhs.y(), self * rhs.z())
     }
 }
 
@@ -222,5 +243,21 @@ mod tests {
 
         let v = Vec3::new(1.0, 2.0, 3.0);
         assert_eq!(v / 0.0, None);
+    }
+
+    #[test]
+    fn dot_product() {
+        let v1 = Vec3::new(1.0, 2.0, 3.0);
+        let v2 = Vec3::new(2.0, 3.0, 4.0);
+
+        assert_eq!(v1.dot(v2), 20.0);
+    }
+
+    #[test]
+    fn cross_product() {
+        let v1 = Vec3::new(1.0, 2.0, 3.0);
+        let v2 = Vec3::new(2.0, 3.0, 4.0);
+
+        assert_eq!(v1.cross(v2), Vec3::new(-1.0, -2.0, -1.0));
     }
 }
