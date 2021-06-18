@@ -49,6 +49,13 @@ impl Vec3 {
             self.z() * divisor,
         ))
     }
+
+    fn any(&self, val: f64) -> bool {
+        if self.x() == val || self.y() == val || self.z() == val {
+            return true;
+        }
+        false
+    }
 }
 
 impl ops::Add<Vec3> for Vec3 {
@@ -66,10 +73,10 @@ impl ops::Add<Vec3> for Vec3 {
 impl ops::Sub<Vec3> for Vec3 {
     type Output = Vec3;
 
-    fn sub(self, other: Self) -> Self::Output {
-        let x = self.x() - other.x();
-        let y = self.y() - other.y();
-        let z = self.z() - other.z();
+    fn sub(self, rhs: Self) -> Self::Output {
+        let x = self.x() - rhs.x();
+        let y = self.y() - rhs.y();
+        let z = self.z() - rhs.z();
 
         Self(x, y, z)
     }
@@ -86,12 +93,42 @@ impl ops::Neg for Vec3 {
 impl ops::Mul for Vec3 {
     type Output = Self;
 
-    fn mul(self, other: Self) -> Self::Output {
-        Self(
-            self.x() * other.x(),
-            self.y() * other.y(),
-            self.z() * other.z(),
-        )
+    fn mul(self, rhs: Self) -> Self::Output {
+        Self(self.x() * rhs.x(), self.y() * rhs.y(), self.z() * rhs.z())
+    }
+}
+
+impl ops::Mul<f64> for Vec3 {
+    type Output = Self;
+
+    fn mul(self, other: f64) -> Self::Output {
+        Self(self.x() * other, self.y() * other, self.z() * other)
+    }
+}
+
+impl ops::Div for Vec3 {
+    type Output = Option<Self>;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        if rhs.any(0.0) {
+            return None;
+        }
+        Some(Self(
+            self.x() / rhs.x(),
+            self.y() / rhs.y(),
+            self.z() / rhs.z(),
+        ))
+    }
+}
+
+impl ops::Div<f64> for Vec3 {
+    type Output = Option<Self>;
+
+    fn div(self, rhs: f64) -> Self::Output {
+        if rhs == 0.0 {
+            return None;
+        }
+        Some(Self(self.x() / rhs, self.y() / rhs, self.z() / rhs))
     }
 }
 
@@ -157,5 +194,33 @@ mod tests {
         let v2 = Vec3::new(4.0, 5.0, 6.0);
 
         assert_eq!(v1 * v2, Vec3::new(4.0, 10.0, 18.0));
+    }
+
+    #[test]
+    fn scalar_mult() {
+        let v = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(v * 4.0, Vec3::new(4.0, 8.0, 12.0));
+    }
+
+    #[test]
+    fn div_two_vecs() {
+        let v1 = Vec3::new(1.0, 2.0, 3.0);
+        let v2 = Vec3::new(3.0, 4.0, 6.0);
+
+        assert_eq!((v2 / v1).unwrap(), Vec3::new(3.0, 2.0, 2.0));
+
+        let v_fail = Vec3::new(1.0, 0.0, 2.0);
+        let v = Vec3::new(1.0, 1.0, 1.0);
+
+        assert_eq!(v / v_fail, None);
+    }
+
+    #[test]
+    fn div_by_scalar() {
+        let v = Vec3::new(2.0, 4.0, 6.0);
+        assert_eq!((v / 2.0).unwrap(), Vec3::new(1.0, 2.0, 3.0));
+
+        let v = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(v / 0.0, None);
     }
 }
