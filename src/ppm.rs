@@ -1,5 +1,15 @@
 use std::io::prelude::*;
 
+pub fn render<W, F>(writer: W, generator: F) -> std::io::Result<()>
+where
+    W: Write + 'static,
+    F: Fn(BoxedGenerator) -> std::io::Result<()>,
+{
+    generator(Ppm::new(writer))
+}
+
+pub type BoxedGenerator = Box<dyn Generator>;
+
 #[derive(Debug)]
 pub struct Ppm<W: Write> {
     writer: W,
@@ -11,8 +21,8 @@ pub trait Generator {
 }
 
 impl<W: Write> Ppm<W> {
-    pub fn new(writer: W) -> Self {
-        Ppm { writer }
+    pub fn new(writer: W) -> Box<Self> {
+        Box::new(Ppm { writer })
     }
 }
 
