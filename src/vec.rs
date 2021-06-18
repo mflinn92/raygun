@@ -1,3 +1,6 @@
+use std::ops;
+
+#[derive(Debug, PartialEq)]
 struct Vec3(f64, f64, f64);
 
 impl Vec3 {
@@ -28,8 +31,35 @@ impl Vec3 {
     fn b(&self) -> f64 {
         self.z()
     }
+
+    fn length(&self) -> f64 {
+        f64::sqrt(self.x() * self.x() + self.y() * self.y() + self.z() * self.z())
+    }
 }
 
+impl ops::Add<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn add(self, rhs: Vec3) -> Self::Output {
+        let x = self.x() + rhs.x();
+        let y = self.y() + rhs.y();
+        let z = self.z() + rhs.z();
+
+        Self(x, y, z)
+    }
+}
+
+impl ops::Sub<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn sub(self, other: Self) -> Self::Output {
+        let x = self.x() - other.x();
+        let y = self.y() - other.y();
+        let z = self.z() - other.z();
+
+        Self(x, y, z)
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -49,5 +79,27 @@ mod tests {
         let z = v.z();
         let b = v.b();
         assert_eq!(b, z);
+    }
+
+    #[test]
+    fn calculate_vec_length() {
+        let v = Vec3::new(0.0, 4.0, 3.0);
+        assert_eq!(v.length(), 5.0)
+    }
+
+    #[test]
+    fn add_two_vecs() {
+        let v1 = Vec3::new(1.0, 2.0, 3.0);
+        let v2 = Vec3::new(4.0, 5.0, 6.0);
+
+        assert_eq!(v1 + v2, Vec3::new(5.0, 7.0, 9.0))
+    }
+
+    #[test]
+    fn subtract_two_vecs() {
+        let v1 = Vec3::new(4.0, 5.0, 6.0);
+        let v2 = Vec3::new(1.0, 2.0, 3.0);
+
+        assert_eq!(v1 - v2, Vec3::new(3.0, 3.0, 3.0));
     }
 }
