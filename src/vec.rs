@@ -35,6 +35,20 @@ impl Vec3 {
     fn length(&self) -> f64 {
         f64::sqrt(self.x() * self.x() + self.y() * self.y() + self.z() * self.z())
     }
+
+    /// Consumes self and makes returns an `Option<Vec3>` new unit vector in the direction of self
+    /// If length of self is 0 `None` will be returned
+    fn unit_vec(self) -> Option<Self> {
+        if self.length() == 0.0 {
+            return None;
+        }
+        let divisor = 1.0 / self.length();
+        Some(Self(
+            self.x() * divisor,
+            self.y() * divisor,
+            self.z() * divisor,
+        ))
+    }
 }
 
 impl ops::Add<Vec3> for Vec3 {
@@ -60,6 +74,27 @@ impl ops::Sub<Vec3> for Vec3 {
         Self(x, y, z)
     }
 }
+
+impl ops::Neg for Vec3 {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        Self(-self.x(), -self.y(), -self.z())
+    }
+}
+
+impl ops::Mul for Vec3 {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self::Output {
+        Self(
+            self.x() * other.x(),
+            self.y() * other.y(),
+            self.z() * other.z(),
+        )
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -101,5 +136,26 @@ mod tests {
         let v2 = Vec3::new(1.0, 2.0, 3.0);
 
         assert_eq!(v1 - v2, Vec3::new(3.0, 3.0, 3.0));
+    }
+
+    #[test]
+    fn negate_vectors() {
+        let v = Vec3::new(2.0, -5.0, 1.0);
+        assert_eq!(-v, Vec3::new(-2.0, 5.0, -1.0));
+    }
+
+    #[test]
+    fn unit_vec() {
+        let v = Vec3::new(0.0, 4.0, 3.0);
+        let u = v.unit_vec().unwrap();
+        assert!(u.length() == 1.0);
+    }
+
+    #[test]
+    fn multiply_vecs() {
+        let v1 = Vec3::new(1.0, 2.0, 3.0);
+        let v2 = Vec3::new(4.0, 5.0, 6.0);
+
+        assert_eq!(v1 * v2, Vec3::new(4.0, 10.0, 18.0));
     }
 }
