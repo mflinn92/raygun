@@ -54,7 +54,7 @@ impl Vec3 {
     }
 
     fn any(&self, val: f64) -> bool {
-        if self.x() == val || self.y() == val || self.z() == val {
+        if float_cmp(self.x(), val) || float_cmp(self.y(), val) || float_cmp(self.z(), val) {
             return true;
         }
         false
@@ -262,4 +262,8 @@ mod tests {
 
         assert_eq!(v1.cross(v2), Vec3::new(-1.0, -2.0, -1.0));
     }
+}
+
+fn float_cmp(a: f64, b: f64) -> bool {
+    (a - b).abs() < f64::EPSILON
 }
