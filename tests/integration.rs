@@ -1,5 +1,3 @@
-use std::io::Read;
-
 use raygun::render;
 use tempfile::tempfile;
 

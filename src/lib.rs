@@ -1,5 +1,5 @@
-use std::fs::File;
 use std::io::Write;
+
 mod ppm;
 mod vec;
 use ppm::{Generator, Ppm};
