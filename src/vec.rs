@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 /// All vec operations will consume their arguments and return a new Vec3
 use std::ops;
 
