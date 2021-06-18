@@ -1,24 +1,18 @@
-use std::fs::File;
+use std::io::Write;
+
 mod ppm;
-use ppm::Ppm;
+mod vec;
+use ppm::{Generator, Ppm};
 
-const WIDTH: u32 = 200;
-const HEIGHT: u32 = 100;
+pub const WIDTH: u32 = 200;
+pub const HEIGHT: u32 = 100;
 
-pub fn render(path: &str) -> std::io::Result<()> {
-    let img = File::create(path)?;
-    let mut ppm = Ppm::new(img);
+pub fn render<W, F>(writer: W, generator: F) -> std::io::Result<()>
+where
+    W: Write + 'static,
+    F: Fn(Box<dyn Generator>) -> std::io::Result<()>,
+{
+    let ppm = Ppm::new(writer);
 
-    ppm.header(WIDTH, HEIGHT)?;
-
-    for j in (0..HEIGHT).rev() {
-        for i in 0..WIDTH {
-            let r = ((i as f64 / WIDTH as f64) * 255.99) as u8;
-            let g = ((j as f64 / HEIGHT as f64) * 255.99) as u8;
-            let b = (0.2 * 255.99) as u8;
-            let point = &format!("{} {} {}", r, g, b);
-            ppm.append(point)?;
-        }
-    }
-    Ok(())
+    generator(Box::new(ppm))
 }
