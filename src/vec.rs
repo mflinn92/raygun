@@ -3,44 +3,44 @@
 use std::ops;
 
 #[derive(Debug, PartialEq)]
-struct Vec3(f64, f64, f64);
+pub struct Vec3(pub f64, pub f64, pub f64);
 
 impl Vec3 {
-    fn new(x: f64, y: f64, z: f64) -> Self {
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
         Vec3(x, y, z)
     }
 
-    fn x(&self) -> f64 {
+    pub fn x(&self) -> f64 {
         self.0
     }
 
-    fn y(&self) -> f64 {
+    pub fn y(&self) -> f64 {
         self.1
     }
 
-    fn z(&self) -> f64 {
+    pub fn z(&self) -> f64 {
         self.2
     }
 
-    fn r(&self) -> f64 {
+    pub fn r(&self) -> f64 {
         self.x()
     }
 
-    fn g(&self) -> f64 {
+    pub fn g(&self) -> f64 {
         self.y()
     }
 
-    fn b(&self) -> f64 {
+    pub fn b(&self) -> f64 {
         self.z()
     }
 
-    fn length(&self) -> f64 {
+    pub fn length(&self) -> f64 {
         f64::sqrt(self.x() * self.x() + self.y() * self.y() + self.z() * self.z())
     }
 
     /// Consumes self and makes returns an `Option<Vec3>` new unit vector in the direction of self
     /// If length of self is 0 `None` will be returned
-    fn unit_vec(self) -> Option<Self> {
+    pub fn unit_vec(self) -> Option<Self> {
         if self.length() == 0.0 {
             return None;
         }
@@ -52,18 +52,18 @@ impl Vec3 {
         ))
     }
 
-    fn any(&self, val: f64) -> bool {
+    pub fn any(&self, val: f64) -> bool {
         if float_cmp(self.x(), val) || float_cmp(self.y(), val) || float_cmp(self.z(), val) {
             return true;
         }
         false
     }
 
-    fn dot(self, rhs: Self) -> f64 {
+    pub fn dot(self, rhs: Self) -> f64 {
         self.x() * rhs.x() + self.y() * rhs.y() + self.z() * rhs.z()
     }
 
-    fn cross(self, rhs: Self) -> Self {
+    pub fn cross(self, rhs: Self) -> Self {
         let x = self.y() * rhs.z() - self.z() * rhs.y();
         let y = self.x() * rhs.z() - self.z() * rhs.x();
         let z = self.x() * rhs.y() - self.y() * rhs.x();
@@ -151,6 +151,28 @@ impl ops::Div<f64> for Vec3 {
             return None;
         }
         Some(Self(self.x() / rhs, self.y() / rhs, self.z() / rhs))
+    }
+}
+
+impl From<&str> for Vec3 {
+    fn from(data: &str) -> Self {
+        let mut vals = data
+            .trim()
+            .split_whitespace()
+            .take(3)
+            .map(|val| val.parse::<u8>().unwrap());
+        Self(
+            vals.next().unwrap() as f64,
+            vals.next().unwrap() as f64,
+            vals.next().unwrap() as f64,
+        )
+    }
+}
+
+impl From<Vec3> for String {
+    fn from(vec: Vec3) -> Self {
+        let Vec3(x, y, z) = vec;
+        format!("{} {} {}", x, y, z)
     }
 }
 

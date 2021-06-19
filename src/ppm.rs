@@ -8,7 +8,7 @@ where
     generator(Ppm::new(writer))
 }
 
-pub type BoxedGenerator = Box<dyn Generator>;
+type BoxedGenerator = Box<dyn Generator>;
 
 #[derive(Debug)]
 pub struct Ppm<W: Write> {

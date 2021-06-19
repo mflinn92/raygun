@@ -1,4 +1,4 @@
-use raygun::{render, HEIGHT, WIDTH};
+use raygun::{render, Vec3, HEIGHT, WIDTH};
 use std::fs::File;
 
 fn main() {
@@ -9,11 +9,10 @@ fn main() {
 
         for j in (0..HEIGHT).rev() {
             for i in 0..WIDTH {
-                let r = ((i as f64 / WIDTH as f64) * 255.99) as u8;
-                let g = ((j as f64 / HEIGHT as f64) * 255.99) as u8;
-                let b = (0.2 * 255.99) as u8;
-                let point = &format!("{} {} {}", r, g, b);
-                img_writer.append(point)?;
+                let vec = Vec3::new(i as f64 / WIDTH as f64, j as f64 / HEIGHT as f64, 0.2);
+                let point = vec * 255.99;
+                let point: String = point.into();
+                img_writer.append(point.as_str())?;
             }
         }
         Ok(())
