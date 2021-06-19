@@ -172,7 +172,7 @@ impl From<&str> for Vec3 {
 impl From<Vec3> for String {
     fn from(vec: Vec3) -> Self {
         let Vec3(x, y, z) = vec;
-        format!("{} {} {}", x, y, z)
+        format!("{} {} {}", x as u8, y as u8, z as u8)
     }
 }
 
@@ -282,6 +282,16 @@ mod tests {
         let v2 = Vec3::new(2.0, 3.0, 4.0);
 
         assert_eq!(v1.cross(v2), Vec3::new(-1.0, -2.0, -1.0));
+    }
+
+    #[test]
+    fn string_conversions() {
+        let s = "1 2 3";
+        let v: Vec3 = s.into();
+        assert_eq!(v, Vec3::new(1.0, 2.0, 3.0));
+
+        let s: String = v.into();
+        assert_eq!(&s, "1 2 3");
     }
 }
 
