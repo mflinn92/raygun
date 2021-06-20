@@ -2,7 +2,7 @@
 /// All vec operations will consume their arguments and return a new Vec3
 use std::ops;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Vec3(pub f64, pub f64, pub f64);
 
 impl Vec3 {

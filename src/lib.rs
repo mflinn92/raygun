@@ -1,4 +1,5 @@
 mod ppm;
+mod ray;
 mod vec;
 pub use ppm::render;
 pub use vec::Vec3;
