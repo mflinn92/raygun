@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use crate::Vec3;
 
 pub struct Ray {
