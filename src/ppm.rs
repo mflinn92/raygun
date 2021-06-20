@@ -1,8 +1,8 @@
-use std::io::prelude::*;
+use std::{fmt::Debug, io::prelude::*};
 
 pub fn render<W, F>(writer: W, generator: F) -> std::io::Result<()>
 where
-    W: Write + 'static,
+    W: Write + Debug + 'static,
     F: Fn(BoxedGenerator) -> std::io::Result<()>,
 {
     generator(Ppm::new(writer))
@@ -11,28 +11,33 @@ where
 type BoxedGenerator = Box<dyn Generator>;
 
 #[derive(Debug)]
-pub struct Ppm<W: Write> {
+pub struct Ppm<W: Write + Debug> {
     writer: W,
 }
 
 pub trait Generator {
     fn header(&mut self, width: u32, height: u32) -> std::io::Result<()>;
     fn append(&mut self, data: &str) -> std::io::Result<()>;
+    fn show(&self);
 }
 
-impl<W: Write> Ppm<W> {
+impl<W: Write + Debug> Ppm<W> {
     pub fn new(writer: W) -> Box<Self> {
         Box::new(Ppm { writer })
     }
 }
 
-impl<W: Write> Generator for Ppm<W> {
+impl<W: Write + Debug> Generator for Ppm<W> {
     fn header(&mut self, width: u32, height: u32) -> std::io::Result<()> {
         write!(self.writer, "P3\n{} {}\n255\n", width, height)
     }
 
     fn append(&mut self, point_str: &str) -> std::io::Result<()> {
         writeln!(self.writer, "{}", point_str)
+    }
+
+    fn show(&self) {
+        println!("{:?}", self.writer);
     }
 }
 
