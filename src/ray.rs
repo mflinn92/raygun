@@ -7,7 +7,7 @@ pub struct Ray {
 }
 
 impl Ray {
-    fn new(a: Vec3, b: Vec3) -> Self {
+    pub fn new(a: Vec3, b: Vec3) -> Self {
         Ray { a, b }
     }
 
@@ -21,6 +21,17 @@ impl Ray {
 
     fn point_at(&self, t: f64) -> Vec3 {
         self.a + self.b * t
+    }
+
+    pub fn color(&self) -> Option<Vec3> {
+        let unit = match self.direction().unit_vec() {
+            Some(v) => v,
+            None => return None,
+        };
+
+        let t = 0.5 * (unit.y() + 1.0);
+        // creates a background gradient
+        Some((1.0 - t) * Vec3::new(1.0, 1.0, 2.0) + t * Vec3::new(0.5, 0.7, 1.0))
     }
 }
 
